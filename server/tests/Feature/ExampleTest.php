@@ -7,6 +7,9 @@ use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
+
+    use RefreshDatabase;
+
     /**
      * A basic test example.
      *
@@ -14,6 +17,21 @@ class ExampleTest extends TestCase
      */
     public function testBasicTest()
     {
+        //$user = User::factory()->create();
+
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
+    }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testBasicTest2()
+    {
+
         $response = $this->get('/');
 
         $response->assertStatus(200);
