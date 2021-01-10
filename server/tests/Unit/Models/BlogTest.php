@@ -34,4 +34,18 @@ class BlogTest extends TestCase
 
         $this->assertInstanceOf(Collection::class, $blog->comments);
     }
+
+    /** @test */
+    function ブログの公開・非公開のscope()
+    {
+        $bloag1 = Blog::factory()->create(['status' => Blog::CLOSE, 'title' => 'ブログA']);
+        $bloag2 = Blog::factory()->create(['title' => 'ブログB']);
+        $bloag3 = Blog::factory()->create(['title' => 'ブログC']);
+
+        $blogs = Blog::onlyOpen()->get();
+
+        $this->assertFalse($blogs->contains($bloag1));
+        $this->assertTrue($blogs->contains($bloag2));
+        $this->assertTrue($blogs->contains($bloag3));
+    }
 }
