@@ -18,9 +18,9 @@ class BlogViewControllerTest extends TestCase
     {
         //$this->withoutExceptionHandling();
 
-        $blog1 = Blog::factory()->create();
-        $blog2 = Blog::factory()->create();
-        $blog3 = Blog::factory()->create();
+        $blog1 = Blog::factory()->hasComments(1)->create();
+        $blog2 = Blog::factory()->hasComments(2)->create();
+        $blog3 = Blog::factory()->hasComments(3)->create();
 
         $this->get('/')
             ->assertOk()
@@ -29,13 +29,14 @@ class BlogViewControllerTest extends TestCase
             ->assertSee($blog2->title)
             ->assertSee($blog2->user->name)
             ->assertSee($blog3->title)
-            ->assertSee($blog3->user->name);
+            ->assertSee($blog3->user->name)
+            ->assertSee("（1件のコメント）");
     }
 
     /** @test */
     function factoryの観察()
     {
         $blog = Blog::factory()->create();
-        $this->assertTrye(true);
+        $this->assertTrue(true);
     }
 }
