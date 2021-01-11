@@ -10,7 +10,7 @@ class Blog extends Model
     use HasFactory;
 
     const OPEN = 1;
-    const CLOSE = 0;
+    const CLOSED = 0;
 
     public function user()
     {
@@ -25,5 +25,10 @@ class Blog extends Model
     public function scopeOnlyOpen($query)
     {
         return $query->where('status', self::OPEN);
+    }
+
+    public function isClosed()
+    {
+        return $this->status == self::CLOSED;
     }
 }
