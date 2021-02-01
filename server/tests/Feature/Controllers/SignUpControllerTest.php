@@ -27,11 +27,7 @@ class SignUpControllerTest extends TestCase
 
         //$this->withoutExceptionHandling();
 
-        $validData = [
-            'name' => '太郎',
-            'email' => 'aaa@bbb.net',
-            'password' => 'abcd1234',
-        ];
+        $validData = User::factory()->validData();
 
         $this->post('signup', $validData)
             ->assertOk();
