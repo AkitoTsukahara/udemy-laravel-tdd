@@ -14,3 +14,8 @@ docker-compose exec php bash
 ```
 docker stop $(docker ps -q)
 ```
+
+```
+vendor/bin/phpunit
+vendor/bin/phpunit --filter=BlogViewControllerTest
+```
