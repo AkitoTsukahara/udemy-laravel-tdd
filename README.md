@@ -18,5 +18,6 @@ docker stop $(docker ps -q)
 ```
 vendor/bin/phpunit
 vendor/bin/phpunit --filter=BlogViewControllerTest
+vendor/bin/phpunit --filter=UserLoginControllerTest
 docker-compose exec php vendor/bin/phpunit --filter=UserLoginControllerTest
 ```

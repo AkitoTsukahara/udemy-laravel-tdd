@@ -23,5 +23,12 @@ class DatabaseSeeder extends Seeder
                 }
             );
         });
+
+        User::first()->update([
+            'name' => '自分',
+            'email' => 'aaa@bbb.net',
+            'password' => bcrypt('hogehoge'),
+        ]);
+
     }
 }
