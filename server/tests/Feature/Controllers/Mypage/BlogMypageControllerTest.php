@@ -84,17 +84,17 @@ class BlogMypageControllerTest extends TestCase
     }
 
     /** @test store */
-    function マイページ、ブログの登録時の入力チェック()
-    {
-        $url = 'mypage/blogs/create';
-        $this->login();
-        $this->from($url)->post($url, [])->assertRedirect($url);
-        app()->setlocale('testing');
-        $this->post($url, ['title' => ''])->assertSessionHasErrors(['title' => 'required']);
-        $this->post($url, ['title' => str_repeat('a', 256)])->assertSessionHasErrors(['title' => 'max']);
-        $this->post($url, ['title' => str_repeat('a', 255)])->assertSessionDoesntHaveErrors(['title' => 'max']);
-        $this->post($url, ['body' => ''])->assertSessionHasErrors(['body' => 'required']);
-    }
+//    function マイページ、ブログの登録時の入力チェック()
+//    {
+//        $url = 'mypage/blogs/create';
+//        $this->login();
+//        $this->from($url)->post($url, [])->assertRedirect($url);
+//        app()->setlocale('testing');
+//        $this->post($url, ['title' => ''])->assertSessionHasErrors(['title' => 'required']);
+//        $this->post($url, ['title' => str_repeat('a', 256)])->assertSessionHasErrors(['title' => 'max']);
+//        $this->post($url, ['title' => str_repeat('a', 255)])->assertSessionDoesntHaveErrors(['title' => 'max']);
+//        $this->post($url, ['body' => ''])->assertSessionHasErrors(['body' => 'required']);
+//    }
 
     /** @test edit */
     function 他人様のブログの編集画面は開けない()

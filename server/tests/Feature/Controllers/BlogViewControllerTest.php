@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Controllers;
 
+use Facades\Illuminate\Support\Str;
 use App\Models\Blog;
 use App\Models\User;
 use App\Models\Comment;
@@ -9,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\StrRandom;
 use App\Http\Middleware\BlogShowLimit;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 
@@ -126,6 +128,23 @@ class BlogViewControllerTest extends TestCase
             ->assertSee($blog->title)
             ->assertSee($blog->user->name)
             ->assertSeeInOrder(['次郎', '太郎', '三郎']);
+    }
+
+    /** @test show */
+    function ブログの詳細画面で、ランダムな文字列が10文字表示される()
+    {
+        $this->withoutMiddleware(BlogShowLimit::class);
+        $this->withoutExceptionHandling();
+
+        $blog = Blog::factory()->create();
+
+        $this->mock(StrRandom::class, function ($mock) {
+            $mock->shouldReceive('random')->once()->with(10)->andReturn('HELLO_RAND');
+        });
+
+        $this->get('blogs/'.$blog->id)
+            ->assertOk()
+            ->assertSee('HELLO_RAND');
     }
 
 }
