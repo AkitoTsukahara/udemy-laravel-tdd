@@ -26,6 +26,7 @@ class BlogMypageControllerTest extends TestCase
 
         $this->get('mypage/blogs')->assertRedirect($url);
         $this->get('mypage/blogs/create')->assertRedirect($url);
+        $this->post('mypage/blogs/create', [])->assertRedirect($url);
 
         $this->login();
 
@@ -55,5 +56,53 @@ class BlogMypageControllerTest extends TestCase
 
         $this->get('mypage/blogs/create')
             ->assertOk();
+    }
+
+    /** @test store */
+    function マイページ、ブログを新規登録できる、公開の場合()
+    {
+        $this->login();
+
+        $validData = Blog::factory()->validData();
+
+        $this->post('mypage/blogs/create', $validData)
+            ->assertRedirect('mypage/blogs/edit/1'); // SQLite のインメモリ
+
+        $this->assertDatabaseHas('blogs', $validData);
+    }
+
+    /** @test store */
+    function マイページ、ブログを新規登録できる、非公開の場合()
+    {
+        $this->login();
+
+        $validData = Blog::factory()->validData();
+
+        unset($validData['status']);
+
+        $this->post('mypage/blogs/create', $validData)
+            ->assertRedirect('mypage/blogs/edit/1'); // SQLite のインメモリ
+
+        $validData['status'] = '0';
+
+        $this->assertDatabaseHas('blogs', $validData);
+    }
+
+    /** @test store */
+    function マイページ、ブログの登録時の入力チェック()
+    {
+        $url = 'mypage/blogs/create';
+
+        $this->login();
+
+        // $this->from($url)->post($url, [])
+        //     ->assertRedirect($url);
+
+        app()->setlocale('testing');
+
+        $this->post($url, ['title' => ''])->assertSessionHasErrors(['title' => 'required']);
+        $this->post($url, ['title' => str_repeat('a', 256)])->assertSessionHasErrors(['title' => 'max']);
+        $this->post($url, ['title' => str_repeat('a', 255)])->assertSessionDoesntHaveErrors(['title' => 'max']);
+        $this->post($url, ['body' => ''])->assertSessionHasErrors(['body' => 'required']);
     }
 }
