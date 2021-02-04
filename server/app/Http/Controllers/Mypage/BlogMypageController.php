@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Mypage;
 
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class BlogMypageController extends Controller
@@ -25,15 +26,59 @@ class BlogMypageController extends Controller
     {
         // $data = $request->all(['title', 'body']);
 
-        $data = $request->validate([
-            'title' => ['required', 'max:255'],
-            'body' => ['required'],
-        ]);
+        $data = $this->validateInput();
 
         $data['status'] = $request->boolean('status');
 
         $blog = auth()->user()->blogs()->create($data);
 
         return redirect('mypage/blogs/edit/'.$blog->id);
+    }
+
+    public function edit(Blog $blog, Request $request)
+    {
+        if ($request->user()->isNot($blog->user)) {
+            abort(403);
+        }
+
+        $data = old() ?: $blog;
+
+        return view('mypage.blog.edit', compact('blog', 'data'));
+    }
+
+    public function update(Blog $blog, Request $request)
+    {
+        // 所有チェック
+        if ($request->user()->isNot($blog->user)) {
+            abort(403);
+        }
+
+        $data = $this->validateInput();
+
+        $data['status'] = $request->boolean('status');
+
+        $blog->update($data);
+
+        return redirect(route('mypage.blog.edit', $blog))
+            ->with('status', 'ブログを更新しました');
+    }
+
+    private function validateInput()
+    {
+        return request()->validate([
+            'title' => ['required', 'max:255'],
+            'body' => ['required'],
+        ]);
+    }
+
+    public function destroy(Blog $blog, Request $request)
+    {
+        if ($request->user()->isNot($blog->user)) {
+            abort(403);
+        }
+
+        $blog->delete();
+
+        return redirect('mypage/blogs');
     }
 }
